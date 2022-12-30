@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        
+        <title>Triplan.好用的旅遊規劃網站</title>
+        <!-- Latest compiled and minified CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- jQuery library -->
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.slim.min.js"></script>
+        
+
+    </head>
+    <!-- id是我自己為元素命名的 class是我將元素歸為某特定類別 會有很多元素屬於同一類-->
+    <body class = "bg-light">
+        <style>
+            .carousel-item { 
+                height: 700px;
+            }
+            /** 取代css的功能**/
+
+            .carousel-caption{
+                top:50%;
+                transform: translateY(-50%); /** Y軸平移 但作用不明顯 可有可無**/
+            }
+
+            .input-group{
+                max-width: 300px; /** 固定search bar 的大小**/
+            }
+
+            .card-img-top{
+                height: 170px;
+            }
+            
+            
+ 
+        </style>
+
+            <nav class="navbar navbar-dark bg-dark"><!-- 最上面的bar-->
+
+                <!--  Hello Users 的按鈕-->
+                <div class="btn-group"  style="position: absolute; top: 8px; right: 165px; height: 40px; width: 50px;">
+                    <button type="button" class="btn btn-dark dropdown-toggle btn-outline-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                        Hello {{user_name}}
+                    </button>
+                    <!-- Hello Users 的下拉是選單-->
+                    <ul class="dropdown-menu dropdown-menu-sm-end dropdown-menu-xl-start">
+                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#PwdChange">Password Change</a></li>
+                    <div class="dropdown-divider"></div> <!-- 會把下拉選單分開-->
+                    <form method='POST'>
+                        <li><button class="dropdown-item" name="Logout">Logout</button></li>
+                    </form>
+                    </ul>
+
+                    <!-- modal 是彈出式視窗-->
+                    <form action="" method='POST'>
+                    <div class="modal fade" id="PwdChange" tabindex="-1" aria-labelledby="#modalBasicLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="#modalBasicLabel">Password Change</h5>
+                                    <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body md-2">
+                                    <h6>&nbsp;&nbsp;Old Password</h6>
+                                    <input type="password" name="old_password" class="form-control mb-3" placeholder="Please enter old password">
+                                    <h6>&nbsp;&nbsp;New Password</h6>
+                                    <input type="password" name="new_password" class="form-control mb-2" placeholder="Please enter new password">
+                                    <input type="password" name="confirmpwd" class="form-control mb-2" placeholder="Please enter again">
+                                </div>
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> <!-- data-bs-dismiss="modal"是讓close有close的功能 -->
+                                <button type="submit" name="change_password" class="btn btn-primary">Save changes</button>
+                                </div>
+                            </div>                         
+                        </div>            
+                    </div>
+                    </form>
+                </div>
+                
+                <a class="navbar-brand" href="{% url 'main' %}">&nbsp;&nbsp;&nbsp;&nbsp;Triplan.</a>  <!-- &nbsp;空格-->
+              
+                <!-- 旁邊的三根槓槓-->
+                <div class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarDark" aria-controls="navbarDark" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </div>
+
+                <!-- 槓槓的下拉式選單-->
+                <div class="collapse navbar-collapse" id="navbarDark">
+                    <ul class="navbar-nav mr-auto"> <!-- mr-auto 讓右邊空出來 -->
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="{% url 'main' %}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'attractions' %}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attraction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'plan_manager' %}" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Plan Manager</a>
+                    </li>  
+                    </ul>
+                </div>
+            </nav>
+
+                <!-- Right or left aligned dropdown menu can be use at different breakpoints with the help of .dropdown-menu-*-{end|start} class -->
+            
+                <br>
+                <h3>&nbsp;&nbsp;Attractions</h3>
+
+
+        <div class="container-fluid p-5"><!-- 是設定padding的大小-->
+            <form method="GET" class="d-flex" style="width:350px; float:right; position:absolute; left:50px;"> <!-- 搜尋框-->
+                <input name="q" class="form-control me-2" type="search" placeholder="Search" aria-label="Search" style="width:600px; ">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+            
+        </div>
+
+        <div class="container-fluid p-5">
+            <div class="row">
+
+                {% for attractions in spot_search %}
+
+                <!-- first card-->   
+                <div class="col-md-3 sm-2 mb-4">
+                    <div class="card h-100">
+                        <img src="{{attractions.picture}}" alt="images" class="card-img-top"> <!--card-img-top代表圖在頂部-->
+                        <div class="card-body" data-bs-toggle="modal" data-bs-target="#Popup-{{forloop.counter}}" style="cursor: pointer;">
+            
+                            <h5 class="card-title text-uppercase">{{attractions.name}}</h5>
+                            <div class="test-muted">
+                                <p class="card-text">Read more</p>
+                            </div>
+
+                            <!-- popup 的modal-->
+                            <div class="modal" id="Popup-{{forloop.counter}}" tabindex="-1">
+                                <div class="modal-dialog modal-dialog-scrollable">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="modalFullscreenLabel">{{attractions.name}}</h5>
+                                        <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>{{attractions.detail}}</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> <!-- data-bs-dismiss="modal" 讓close可以真的close-->
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                    </div>
+                </div>
+
+                {% endfor %}
+
+
+            </div>
+
+            
+        </div>
+
+        <footer><!-- 最下面那一塊-->
+            <div class="container-fluid bg-dark py-0"> <!-- py-1指某一小塊的大小 py-0最小 py-6最大-->
+                <p class="text-white text-end">
+                    <svg width="16" height="16" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
+                        <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
+                    </svg>&nbsp;&nbsp;gmail:howardisbest@gmail.com<br>
+                all right reserved &copy;2022</p>
+
+            </div>
+        </footer>
+
+       
+
+    </body>
+</html>
