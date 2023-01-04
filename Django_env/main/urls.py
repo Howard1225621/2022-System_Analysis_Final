@@ -10,4 +10,9 @@ urlpatterns = [
     path('plan_manager/', views.plan_manager.as_view(), name="plan_manager"),
     path('plan_manager/plan/', views.plan.as_view(), name="plan"),
 
+    path('member_list/', views.member_list.as_view(), name="member_list"),
+    path('administrator_list/', views.administrator_list.as_view(), name="administrator_list"),
+
+
+
 ]

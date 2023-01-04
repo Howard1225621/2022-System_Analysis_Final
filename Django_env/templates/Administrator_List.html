@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -26,7 +27,7 @@
             #hello_admin{
                 position: absolute;
                 top: 8px;;
-                right: 345px; 
+                right: 230px; 
                 height: 40px;
                 width: 50px;
             }
@@ -46,7 +47,7 @@
                 z-index: 2;
             }
 
-            #ED-button-group{
+            #Delete-Button{
                 z-index: 1;
             }
         </style>
@@ -61,46 +62,50 @@
                 <ul class="dropdown-menu dropdown-menu-sm-end dropdown-menu-xl-start">
                 <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#PwdChange">Password Change</a></li>
                 <div class="dropdown-divider"></div> <!-- 會把下拉選單分開 -->
-                <li><a class="dropdown-item" href="#">Logout</a></li>
+                <form method="POST">
+                <li><button class="dropdown-item" name="Logout">Logout</button></li>
+                </form>
                 </ul>
 
                 <!-- Change Password Modal[Start] -->
-                <div class="modal fade" id="PwdChange" tabindex="-1" aria-labelledby="#modalBasicLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="#modalBasicLabel">Password Change</h5>
-                                <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body md-2">
-                                <h6>&nbsp;&nbsp;Old Password</h6>
-                                <input type="text" class="form-control mb-3" placeholder="Please enter old password">
-                                <h6>&nbsp;&nbsp;New Password</h6>
-                                <input type="text" class="form-control mb-2" placeholder="Please enter new password">
-                                <input type="text" class="form-control mb-2" placeholder="Please enter again">
-                            </div>
-                            <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> <!-- data-bs-dismiss="modal"是讓close有close的功能 -->
-                            <button type="button" class="btn btn-primary">Save changes</button>
-                            </div>
-                        </div>                         
-                    </div>            
-                </div><!-- Change Password Modal[End] -->
+                <form action="" method='POST'>
+                    <div class="modal fade" id="PwdChange" tabindex="-1" aria-labelledby="#modalBasicLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="#modalBasicLabel">Password Change</h5>
+                                    <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body md-2">
+                                    <h6>&nbsp;&nbsp;Old Password</h6>
+                                    <input type="password" name="old_password" class="form-control mb-3" placeholder="Please enter old password">
+                                    <h6>&nbsp;&nbsp;New Password</h6>
+                                    <input type="password" name="new_password" class="form-control mb-2" placeholder="Please enter new password">
+                                    <input type="password" name="confirmpwd" class="form-control mb-2" placeholder="Please enter again">
+                                </div>
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> <!-- data-bs-dismiss="modal"是讓close有close的功能 -->
+                                <button type="submit" name="change_password" class="btn btn-primary">Save changes</button>
+                                </div>
+                            </div>                         
+                        </div>            
+                    </div>
+                </form><!-- Change Password Modal[End] -->
                 
             </div><!-- Hello Admin 下拉條[End] -->
 
-            <div class="container">
-                <a class="navbar-brand" href="Member_List.html">&nbsp;&nbsp;&nbsp;&nbsp;Triplan.</a>
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{% url 'member_list' %}">&nbsp;&nbsp;Triplan.</a>
                 <div class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarDark" aria-controls="navbarDark" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </div>
                 <div class="collapse navbar-collapse " id="navbarDark">
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="Member_List.html">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Board & List</a>
+                            <a class="nav-link" aria-current="page" href="{% url 'member_list' %}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Board & List</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="Attraction_Update.html">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attraction Update</a>
+                            <a class="nav-link" href="#">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attraction Update</a>
                         </li>
                     </ul>
                 </div>
@@ -108,7 +113,6 @@
         </nav>
 
         <br>
-
 
         <!-- DataBoard[Start] -->
         <section class="dashboard">
@@ -129,55 +133,38 @@
                                     </svg>
                                 </div>
                                 <div class="ps-3"><!-- 與左邊icon的距離-->
-                                    <span class="text-success small pt-1 fw-bold">1263</span>
+                                    <span class="text-success small pt-1 fw-bold">
+                                        <h5>{{member_count}}</h5>
+                                    </span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div><!-- MemberCard Data Board[End] -->
-                    
-                    <!-- OnlineCard Data Board[Start] -->
-                <div class="col-xxl-4 col-md-5">
-                    <div class="card info-card sales-card"><!-- 框出一個區域即"card" -->
-                        <div class="card-body">
-                            <h5 class="card-title">Online<span> | Board</span></h5>
-                            <div class="d-flex align-items-center">
-                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                    <svg width="20" height="20" fill="currentColor" class="bi bi-person-check-fill" viewBox="0 0 16 16"><!-- 通常會有xmlns定義SVG區段的命名空間，但移除也沒什麼差別，故移除 -->
-                                        <!-- 繪製圖片[Start] -->
-                                        <path fill-rule="evenodd" d="M15.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L12.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
-                                        <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-                                        <!-- 繪製圖片[End] -->
-                                    </svg>
-                                </div>
-                                <div class="ps-3"><!-- 與左邊icon的距離 -->
-                                    <span class="text-success small pt-1 fw-bold">117</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div><!-- OnlineCard Data Board[End] -->  
 
-                <!-- ViewsCard Data Board[Start] -->
+                <!-- AdminCard Data Board[Start] -->
                 <div class="col-xxl-4 col-md-5">
-                    <div class="card info-card sales-card"><!-- 框出一個區域即"card" -->
+                    <div class="card info-card member-card"><!-- 框出一個區域即"card" -->
                         <div class="card-body">
-                            <h5 class="card-title">Views<span> | Board</span></h5>
+                            <h5 class="card-title">Administrators<span> | Board</span></h5>
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                    <svg width="20" height="20" fill="currentColor" class="bi bi-sunglasses" viewBox="0 0 16 16"><!-- 通常會有xmlns定義SVG區段的命名空間，但移除也沒什麼差別，故移除 -->
+                                    <svg width="20" height="20" fill="currentColor" class="bi bi-incognito" viewBox="0 0 16 16"><!-- 通常會有xmlns定義SVG區段的命名空間，但移除也沒什麼差別，故移除 -->
                                         <!-- 繪製圖片[Start] -->
-                                        <path d="M3 5a2 2 0 0 0-2 2v.5H.5a.5.5 0 0 0 0 1H1V9a2 2 0 0 0 2 2h1a3 3 0 0 0 3-3 1 1 0 1 1 2 0 3 3 0 0 0 3 3h1a2 2 0 0 0 2-2v-.5h.5a.5.5 0 0 0 0-1H15V7a2 2 0 0 0-2-2h-2a2 2 0 0 0-1.888 1.338A1.99 1.99 0 0 0 8 6a1.99 1.99 0 0 0-1.112.338A2 2 0 0 0 5 5H3zm0 1h.941c.264 0 .348.356.112.474l-.457.228a2 2 0 0 0-.894.894l-.228.457C2.356 8.289 2 8.205 2 7.94V7a1 1 0 0 1 1-1z"/>
+                                        <path fill-rule="evenodd" d="m4.736 1.968-.892 3.269-.014.058C2.113 5.568 1 6.006 1 6.5 1 7.328 4.134 8 8 8s7-.672 7-1.5c0-.494-1.113-.932-2.83-1.205a1.032 1.032 0 0 0-.014-.058l-.892-3.27c-.146-.533-.698-.849-1.239-.734C9.411 1.363 8.62 1.5 8 1.5c-.62 0-1.411-.136-2.025-.267-.541-.115-1.093.2-1.239.735Zm.015 3.867a.25.25 0 0 1 .274-.224c.9.092 1.91.143 2.975.143a29.58 29.58 0 0 0 2.975-.143.25.25 0 0 1 .05.498c-.918.093-1.944.145-3.025.145s-2.107-.052-3.025-.145a.25.25 0 0 1-.224-.274ZM3.5 10h2a.5.5 0 0 1 .5.5v1a1.5 1.5 0 0 1-3 0v-1a.5.5 0 0 1 .5-.5Zm-1.5.5c0-.175.03-.344.085-.5H2a.5.5 0 0 1 0-1h3.5a1.5 1.5 0 0 1 1.488 1.312 3.5 3.5 0 0 1 2.024 0A1.5 1.5 0 0 1 10.5 9H14a.5.5 0 0 1 0 1h-.085c.055.156.085.325.085.5v1a2.5 2.5 0 0 1-5 0v-.14l-.21-.07a2.5 2.5 0 0 0-1.58 0l-.21.07v.14a2.5 2.5 0 0 1-5 0v-1Zm8.5-.5h2a.5.5 0 0 1 .5.5v1a1.5 1.5 0 0 1-3 0v-1a.5.5 0 0 1 .5-.5Z"/>
                                         <!-- 繪製圖片[End] -->
                                     </svg>
                                 </div>
-                                <div class="ps-3"><!-- 與左邊icon的距離 -->
-                                    <span class="text-success small pt-1 fw-bold">13491</span>
+                                <div class="ps-3"><!-- 與左邊icon的距離-->
+                                    <span class="text-success small pt-1 fw-bold">
+                                        <h5>{{admin_count}}</h5>
+                                    </span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div><!-- ViewsCard Data Board[End] -->
+                </div><!-- AdminCard Data Board[End] -->
+
             </div>        
         </section><!-- DataBoard[End] -->
 
@@ -193,21 +180,26 @@
                 Check
                 </button>
                 <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="Member_List.html">Member List</a></li>
-                <li><a class="dropdown-item" href="Administrator_List.html">Administrator List</a></li>
+                <li><a class="dropdown-item" href="{% url 'member_list' %}">Member List</a></li>
+                <li><a class="dropdown-item" href="{% url 'administrator_list' %}">Administrator List</a></li>
                 </ul>
             </div>
         </div><!-- 選擇查看Member Sheet或是Administrator Sheet[End] -->
 
         <br>
-        <br>
+
+        {% if messages %}
+        {% for message in messages %}
+            {{message}}
+        {% endfor %}
+        {% endif %}
 
         <!-- 搜尋[Start] -->
         <div class="container" >
             <form class="d-flex justify-content-end">
                 <div class="col-sm-5 col-form-label"><!--調整搜尋欄的大小-->
                     <div class="form-floating mb-3"><!--漂浮欄位--> 
-                        <input class="form-control" type="Search" id="floatingInput" placeholder="  ">
+                        <input class="form-control" type="Search" id="floatingInput" name="q" placeholder="  ">
                         <label for="floatingInput">Search</label>
                     </div>
                 </div>
@@ -227,141 +219,27 @@
             <table class="table table-hover table-bordered">
                 <thead class="table-secondary">
                 <tr>
+                    <th scope="col">#</th>
                     <th scope="col">ID</th>
                     <th scope="col">Account</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Password</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Create Time</th>
-                    <th scope="col">Last Update Time</th>
                     <th scope="col">Option</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Mark111@gmail.com</td>
-                    <td>Mark</td>
-                    <td>0857957</td>
-                    <td></td>
-                    <td>2020-06-07</td>
-                    <td>2021-11-11</td>
-                    <td>
-                        <div class="btn-group" role="group" id="ED-button-group">
-                            <button type="button" class="btn btn-outline-success btn-sm">Edit</button>
-                            <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#Delete_Confirm_Modal">Delete</button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob222@gmail.com</td>
-                    <td>Jacob</td>
-                    <td>0887987</td>
-                    <td></td>
-                    <td>2020-07-08</td>
-                    <td>2021-10-01</td>
-                    <td>
-                        <div class="btn-group" role="group" id="ED-button-group">
-                            <button type="button" class="btn btn-outline-success btn-sm">Edit</button>
-                            <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#Delete_Confirm_Modal">Delete</button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>Bird333@gmail.com</td>
-                    <td>Lary</td>
-                    <td>0877677</td>
-                    <td></td>
-                    <td>2021-05-29</td>
-                    <td>2022-12-24</td>
-                    <td>
-                        <div class="btn-group" role="group" id="ED-button-group">
-                            <button type="button" class="btn btn-outline-success btn-sm">Edit</button>
-                            <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#Delete_Confirm_Modal">Delete</button>
-                        </div>
-                    </td>
-                </tr> 
-                <tr>
-                    <th scope="row">4</th>
-                    <td>Jade444@gmail.com</td>
-                    <td>Jade</td>
-                    <td>0858677</td>
-                    <td></td>
-                    <td>2021-09-21</td>
-                    <td>2022-12-26</td>
-                    <td>
-                        <div class="btn-group" role="group" id="ED-button-group">
-                            <button type="button" class="btn btn-outline-success btn-sm">Edit</button>
-                            <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#Delete_Confirm_Modal">Delete</button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">5</th>
-                    <td>Lucas555@gmail.com</td>
-                    <td>Lucas</td>
-                    <td>0841677</td>
-                    <td></td>
-                    <td>2021-10-11</td>
-                    <td>2022-12-30</td>
-                    <td>
-                        <div class="btn-group" role="group" id="ED-button-group">
-                            <button type="button" class="btn btn-outline-success btn-sm">Edit</button>
-                            <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#Delete_Confirm_Modal">Delete</button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">6</th>
-                    <td>Alice666@gmail.com</td>
-                    <td>Alice</td>
-                    <td>0841527</td>
-                    <td></td>
-                    <td>2021-11-11</td>
-                    <td>2022-12-31</td>
-                    <td>
-                        <div class="btn-group" role="group" id="ED-button-group">
-                            <button type="button" class="btn btn-outline-success btn-sm">Edit</button>
-                            <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#Delete_Confirm_Modal">Delete</button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">7</th>
-                    <td>Angel777@gmail.com</td>
-                    <td>Angel</td>
-                    <td>0874677</td>
-                    <td></td>
-                    <td>2021-12-11</td>
-                    <td>2022-12-31</td>
-                    <td>
-                        <div class="btn-group" role="group" id="ED-button-group">
-                            <button type="button" class="btn btn-outline-success btn-sm">Edit</button>
-                            <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#Delete_Confirm_Modal">Delete</button>
-                        </div>
-                    </td>
-                </tr> 
-
-                <!-- Button_Delete Popout Modal[Start] -->
-                <div class="modal fade" id="Delete_Confirm_Modal" tabindex="-1" aria-labelledby="DeleteConfirmModalLabel" aria-hidden="True">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="DeleteModalLabel">Confirm Delete</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    {% for TblAdministrator in admins %}
+                    <tr>
+                        <th scope="row">{{ TblAdministrator.id_administrator }}</th>
+                        <td>{{ TblAdministrator.id_administrator }}</td>
+                        <td>{{ TblAdministrator.account }}</td>
+                        <td>
+                            <div class="btn" id="Delete-Button">
+                                <form action="" method="POST">
+                                    <button type="submit" name="del" value="{{TblAdministrator.id_administrator}}" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#Delete_Confirm_Modal">Delete</button>
+                                </form>
                             </div>
-                            <div class="modal-body">
-                                Are You Sure To "DELETE" This Administrator, Sir??
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <button type="button" class="btn btn-primary">Delete</button>
-                            </div>
-                        </div>
-                    </div>
-                </div><!-- Button_Delete Popout Modal[End] -->
+                        </td>
+                    </tr>
+                    {% endfor %}
             
                 </tbody>
             </table>

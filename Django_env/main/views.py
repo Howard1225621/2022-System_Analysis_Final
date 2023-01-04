@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.db.models import Q
-from .models import TblAttraction, TblProject, TblMember, TblProjectAttraction
+from .models import TblAttraction, TblProject, TblMember, TblProjectAttraction, TblAdministrator
 import random 
 import datetime
 from django.views.decorators.csrf import  csrf_exempt
@@ -24,13 +24,22 @@ class Loginpage(View):
             request.session['user_id'] = TblMember.objects.get(gmail = input_gmail, password = input_password ).id_member
             return redirect('/main/')
 
-        if not(TblMember.objects.filter(gmail = input_gmail).exists()):
+        if TblAdministrator.objects.filter(account = input_gmail, password = input_password ).exists():
+            request.session['admin_id'] = TblAdministrator.objects.get(account = input_gmail, password = input_password ).id_administrator
+            return redirect('/member_list/')
+
+        if not(TblMember.objects.filter(gmail = input_gmail).exists() or TblAdministrator.objects.filter(account = input_gmail).exists()):
             messages.info(request,'Havent registered yet ?')
             return render(request, "LoginPage.html")
         
         if TblMember.objects.filter(gmail = input_gmail).exists():
             login_member_pswd = TblMember.objects.get(gmail = input_gmail).password
             if not(login_member_pswd == input_password):
+                messages.info(request,'Please check your password !')
+
+        if TblAdministrator.objects.filter(account = input_gmail).exists():
+            login_admin_pswd = TblAdministrator.objects.get(account = input_gmail).password
+            if not(login_admin_pswd == input_password):
                 messages.info(request,'Please check your password !')
         
     
@@ -67,7 +76,7 @@ class register(View):
 
 
 
-def pswd_cahnge(request):
+def pswd_change(request):
     old_password = request.POST['old_password']
     new_password = request.POST['new_password']
     confirm_pwd = request.POST['confirmpwd']
@@ -105,7 +114,7 @@ class main_page(View):
 
     def post(self,request):
         if 'change_password' in request.POST:
-            pswd_cahnge(request)
+            pswd_change(request)
 
         if 'Logout' in request.POST:
             return redirect('Loginpage')
@@ -142,7 +151,7 @@ class attractions(View):
     def post(self,request):
         
         if 'change_password' in request.POST:
-            pswd_cahnge(request)
+            pswd_change(request)
 
         if 'Logout' in request.POST:
             return redirect('Loginpage')
@@ -199,7 +208,7 @@ class plan_manager(View):
 
         # password change
         if'pswd_change' in request.POST:
-            pswd_cahnge(request)
+            pswd_change(request)
 
         if 'Logout' in request.POST:
             return redirect('Loginpage')
@@ -299,7 +308,7 @@ class plan(View):
             self.delete(request)
 
         if 'pswd_change' in request.POST:
-            pswd_cahnge(request)
+            pswd_change(request)
 
         if 'day_set' in request.POST:
             self.day_set(request)
@@ -312,6 +321,120 @@ class plan(View):
 
         context = self.user_info(request)
         return render(request, "Plan.html", context)
+
+
+
+#管理者更改密碼
+def change_password(request):
+    old_password = request.POST['old_password']
+    new_password = request.POST['new_password']
+    confirm_pwd = request.POST['confirmpwd']
+
+    admin = TblAdministrator.objects.get(id_administrator = request.session.get('admin_id'))
+
+    if new_password == confirm_pwd and admin.password == old_password:
+        admin.password = new_password
+        admin.save()
+
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class member_list(View):
+
+    def get(self, request):
+        #Search Member
+        q = request.GET.get('q') if request.GET.get('q') != None else ''
+        members = TblMember.objects.filter(
+            Q(id_member__icontains=q) | 
+            Q(name__icontains=q) | 
+            Q(gmail__icontains=q) 
+        )
+
+        #計算會員和管理者人數
+        member_count = TblMember.objects.count()
+        admin_count = TblAdministrator.objects.count()
+        context = {
+            'members':members,
+            'member_count': member_count,
+            'admin_count': admin_count
+        }
+        return render(request, "Member_List.html", context)
+
+    # delete
+    def delete_member(self, request):
+        id = request.POST['del']
+        dmember = TblMember.objects.get(id_member = id)
+        dmember.delete()
+        messages.info(request, 'You Have Deleted Successfully')
+   
+    def post(self,request):
+        #Logout
+        if 'Logout' in request.POST:
+            return redirect('Loginpage')
+
+        #Change Password
+        if 'change_password' in request.POST:
+            change_password(request)
+
+        #Delete Member
+        if 'del' in request.POST:
+            self.delete_member(request)
+
+        context = self.get(request)
+        return context
+
+
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class administrator_list(View):
+
+    def get(self, request):
+        #Search Administrator
+        q = request.GET.get('q') if request.GET.get('q') != None else ''
+        admins = TblAdministrator.objects.filter(
+            Q(id_administrator__icontains=q) | 
+            Q(account__icontains=q) 
+        )
+
+        #計算會員和管理者人數
+        member_count = TblMember.objects.count()
+        admin_count = TblAdministrator.objects.count()
+
+        context = {
+            'admins':admins,
+            'member_count': member_count,
+            'admin_count': admin_count
+        }
+        return render(request, 'Administrator_List.html', context)
+
+    # Delete Administrator
+    def delete_admin(self, request):
+        id = request.POST['del']
+        dmember = TblAdministrator.objects.get(id_administrator = id)
+        dmember.delete()
+        messages.info(request, 'You Have Deleted Successfully')
+
+    def post(self,request):
+        #Change Password
+        if 'change_password' in request.POST:
+            change_password(request)
+
+        #Logout
+        if 'Logout' in request.POST:
+            return redirect('Loginpage')
+
+        if 'del' in request.POST:
+            self.delete_admin(request)
+
+        context = self.get(request)
+        return context
+
+
+
+
+
+
 
 
 
