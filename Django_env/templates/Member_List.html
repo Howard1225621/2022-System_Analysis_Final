@@ -1,0 +1,255 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Triplan_BackStage</title>
+        <meta charset="UTF-8">
+        
+        <!--響應式網站-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <!-- Latest compiled and minified CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- jQuery library -->
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.slim.min.js"></script>
+
+        <!-- Popper JS -->
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    </head>
+
+    <body>
+        <style>
+            #hello_admin{
+                position: absolute;
+                top: 8px;;
+                right: 230px; 
+                height: 40px;
+                width: 50px;
+            }
+
+            #Member_List{
+                max-height: 350px;
+                max-width: 1200px;
+                overflow-y: scroll;
+                text-align: center; 
+                margin-left: auto;  
+                margin-right: auto;  
+            }
+
+            .container thead th{
+                position: sticky;
+                top: 0;
+                z-index: 2;
+            }
+
+            #Delete-Button{
+                z-index: 1;
+            }
+        </style>
+
+
+        <!--上面的橫條 & 下拉條-->
+        <nav class="navbar navbar-dark bg-dark">
+            <!-- Hello Admin 下拉條[Start] -->
+            <div class="btn-group" id="hello_admin">
+                <button type="button" class="btn btn-dark dropdown-toggle btn-outline-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                    Hello ,Administrator
+                </button>
+                <ul class="dropdown-menu dropdown-menu-sm-end dropdown-menu-xl-start">
+                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#PwdChange">Password Change</a></li>
+                <div class="dropdown-divider"></div> <!-- 會把下拉選單分開 -->
+                <form method="POST">
+                <li><button class="dropdown-item" name="Logout">Logout</button></li>
+                </form>
+                </ul>
+
+                <!-- Change Password Modal[Start] -->
+                <form action="" method='POST'>
+                    <div class="modal fade" id="PwdChange" tabindex="-1" aria-labelledby="#modalBasicLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="#modalBasicLabel">Password Change</h5>
+                                    <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body md-2">
+                                    <h6>&nbsp;&nbsp;Old Password</h6>
+                                    <input type="password" name="old_password" class="form-control mb-3" placeholder="Please enter old password">
+                                    <h6>&nbsp;&nbsp;New Password</h6>
+                                    <input type="password" name="new_password" class="form-control mb-2" placeholder="Please enter new password">
+                                    <input type="password" name="confirmpwd" class="form-control mb-2" placeholder="Please enter again">
+                                </div>
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> <!-- data-bs-dismiss="modal"是讓close有close的功能 -->
+                                <button type="submit" name="change_password" class="btn btn-primary">Save changes</button>
+                                </div>
+                            </div>                         
+                        </div>            
+                    </div>
+                </form><!-- Change Password Modal[End] -->
+            </div><!-- Hello Admin 下拉條[End] -->
+
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{% url 'member_list' %}">&nbsp;&nbsp;Triplan.</a>
+                <div class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarDark" aria-controls="navbarDark" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </div>
+                <div class="collapse navbar-collapse " id="navbarDark">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="{% url 'member_list' %}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Board & List</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attraction Update</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <br>
+
+
+        <!-- DataBoard[Start] -->
+        <section class="dashboard">
+            <div class="row"><!-- 往橫向排版 -->
+
+                <!-- MemberCard Data Board[Start] -->
+                <div class="col-xxl-4 col-md-5">
+                    <div class="card info-card member-card"><!-- 框出一個區域即"card" -->
+                        <div class="card-body">
+                            <h5 class="card-title">Members<span> | Board</span></h5>
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <svg width="20" height="20" fill="currentColor" class="bi bi-house-heart-fill" viewBox="0 0 16 16"><!-- 通常會有xmlns定義SVG區段的命名空間，但移除也沒什麼差別，故移除 -->
+                                        <!-- 繪製圖片[Start] -->
+                                        <path d="M7.293 1.5a1 1 0 0 1 1.414 0L11 3.793V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v3.293l2.354 2.353a.5.5 0 0 1-.708.707L8 2.207 1.354 8.853a.5.5 0 1 1-.708-.707L7.293 1.5Z"/>
+                                        <path d="m14 9.293-6-6-6 6V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V9.293Zm-6-.811c1.664-1.673 5.825 1.254 0 5.018-5.825-3.764-1.664-6.691 0-5.018Z"/>
+                                        <!-- 繪製圖片[End] -->
+                                    </svg>
+                                </div>
+                                <div class="ps-3"><!-- 與左邊icon的距離-->
+                                    <span class="text-success small pt-1 fw-bold">
+                                        <h5>{{member_count}}</h5>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- MemberCard Data Board[End] -->
+
+                <!-- AdminCard Data Board[Start] -->
+                <div class="col-xxl-4 col-md-5">
+                    <div class="card info-card member-card"><!-- 框出一個區域即"card" -->
+                        <div class="card-body">
+                            <h5 class="card-title">Administrators<span> | Board</span></h5>
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <svg width="20" height="20" fill="currentColor" class="bi bi-incognito" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="m4.736 1.968-.892 3.269-.014.058C2.113 5.568 1 6.006 1 6.5 1 7.328 4.134 8 8 8s7-.672 7-1.5c0-.494-1.113-.932-2.83-1.205a1.032 1.032 0 0 0-.014-.058l-.892-3.27c-.146-.533-.698-.849-1.239-.734C9.411 1.363 8.62 1.5 8 1.5c-.62 0-1.411-.136-2.025-.267-.541-.115-1.093.2-1.239.735Zm.015 3.867a.25.25 0 0 1 .274-.224c.9.092 1.91.143 2.975.143a29.58 29.58 0 0 0 2.975-.143.25.25 0 0 1 .05.498c-.918.093-1.944.145-3.025.145s-2.107-.052-3.025-.145a.25.25 0 0 1-.224-.274ZM3.5 10h2a.5.5 0 0 1 .5.5v1a1.5 1.5 0 0 1-3 0v-1a.5.5 0 0 1 .5-.5Zm-1.5.5c0-.175.03-.344.085-.5H2a.5.5 0 0 1 0-1h3.5a1.5 1.5 0 0 1 1.488 1.312 3.5 3.5 0 0 1 2.024 0A1.5 1.5 0 0 1 10.5 9H14a.5.5 0 0 1 0 1h-.085c.055.156.085.325.085.5v1a2.5 2.5 0 0 1-5 0v-.14l-.21-.07a2.5 2.5 0 0 0-1.58 0l-.21.07v.14a2.5 2.5 0 0 1-5 0v-1Zm8.5-.5h2a.5.5 0 0 1 .5.5v1a1.5 1.5 0 0 1-3 0v-1a.5.5 0 0 1 .5-.5Z"/>
+                                    </svg>
+                                </div>
+                                <div class="ps-3"><!-- 與左邊icon的距離-->
+                                    <span class="text-success small pt-1 fw-bold">
+                                        <h5>{{admin_count}}</h5>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- AdminCard Data Board[End] -->
+            </div>        
+        </section><!-- DataBoard[End] -->
+
+        <!-- 分隔線[Start] -->
+        <p class="placeholder-glow">
+            <span class="placeholder col-12"></span>
+        </p><!-- 分隔線[End] -->
+
+        <!-- 選擇查看Member Sheet或是Administrator Sheet[Strat] -->
+        <div class="text-end">
+            <div class="btn-group dropstart">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                Check
+                </button>
+                <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'member_list' %}">Member List</a></li>
+                <li><a class="dropdown-item" href="{% url 'administrator_list' %}">Administrator List</a></li>
+                </ul>
+            </div>
+        </div><!-- 選擇查看Member Sheet或是Administrator Sheet[End] -->
+
+        <br>
+        
+        {% if messages %}
+            {% for message in messages %}
+                {{message}}
+            {% endfor %}
+        {% endif %}
+
+        <!-- 搜尋[Start] -->
+        <div class="container" >
+            <form class="d-flex justify-content-end">
+                <div class="col-sm-5 col-form-label"><!--調整搜尋欄的大小-->
+                    <div class="form-floating mb-3"><!--漂浮欄位--> 
+                        <input class="form-control" name="q" type="Search" id="SearchInput" placeholder="Search Member...  ">
+                        <label for="SearchInput">Search</label>
+                    </div>
+                </div>
+                <div class="col-form-label"> 
+                    &nbsp;&nbsp;<button class="btn btn-outline-success btn-lg" type="submit">
+                        <svg width="20" height="40" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                    </button><!-- "&nbsp;": 空格(為了排版) -->
+                </div>
+            </form>
+        </div><!-- 搜尋[End] -->
+
+        <!-- 呈現會員資料or管理員資料[Start] -->
+        <!-- 連接資料庫 -->
+        <div class="container" id="Member_List">
+            <table class="table table-hover table-bordered">
+                <thead class="table-secondary">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Account</th>
+                    <th scope="col">Create Time</th>
+                    <th scope="col">Projects</th>
+                    <th scope="col">Option</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                    {% for TblMember in members %}
+                    <tr>
+                        <th scope="row">{{ TblMember.id_member }}</th><!-- ^!!! 顯示問題 !!!^ -->
+                        <td>{{ TblMember.id_member }}</td>
+                        <td>{{ TblMember.name }}</td>
+                        <td>{{ TblMember.gmail }}</td>
+                        <td>{{ TblMember.create_time }}</td>
+                        <td></td> <!-- Projects數量 -->
+                        <td>
+                            <div class="btn" id="Delete-Button">
+                                <form action="" method="POST">
+                                    <button type="submit" name="del" value=" {{TblMember.id_member}}" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#Delete_Confirm_Modal">Delete</button>   
+                                </form>                                                           
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div><!-- 呈現會員資料or管理員資料[End] -->
+
+    </body>
+
+</html>
