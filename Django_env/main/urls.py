@@ -1,6 +1,10 @@
 from django.urls import path
 from . import views
 
+from django.views import static 
+from django.conf import settings 
+from django.conf.urls import url 
+
 
 urlpatterns = [
     path('', views.Loginpage.as_view(), name="Loginpage"),
@@ -13,6 +17,7 @@ urlpatterns = [
     path('member_list/', views.member_list.as_view(), name="member_list"),
     path('administrator_list/', views.administrator_list.as_view(), name="administrator_list"),
 
-
+    url(r'^static/(?P<path>.*)$', static.serve,
+        {'document_root': settings.STATIC_ROOT}, name='static'),
 
 ]
